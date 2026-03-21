@@ -1,0 +1,15 @@
+interface:
+  display_name: "GitHub Review Comment Evaluator"
+  short_description: "Assess GitHub PR review comments and decide fixes"
+  default_prompt: "Use $gh-review-comment-evaluator to inspect this GitHub PR URL, classify each review comment, and tell me what should be fixed."
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "github"
+      description: "GitHub MCP server for pull request review data"
+      transport: "streamable_http"
+      url: "https://api.githubcopilot.com/mcp/"
+
+policy:
+  allow_implicit_invocation: true
