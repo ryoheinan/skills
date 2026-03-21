@@ -1,6 +1,6 @@
 ---
 name: commit-message-staged-check
-description: Draft a Conventional Commits–style message from the current staged diff only. Use when a user asks for a commit message; inspect staged changes, never commit, avoid numeric specifics unless they are the change itself.
+description: Draft Conventional Commits-style commit message variants from the current staged diff only. Use when a user asks for a commit message; inspect staged changes, never commit, provide both subject-only and subject-plus-body versions, and avoid numeric specifics unless they are the change itself.
 ---
 
 # commit-message
@@ -8,6 +8,7 @@ description: Draft a Conventional Commits–style message from the current stage
 現在ステージングした内容を確認し、コミットメッセージを考える。
 
 コミットメッセージを提案するのみで、コミットはしない。
+常に「body なし版」と「body あり版」の 2 パターンを提案する。
 
 ## ルール
 
@@ -21,3 +22,26 @@ description: Draft a Conventional Commits–style message from the current stage
 - Ticket ID は含めない
 - `feat:` のように適切な prefix を使用する
 - @が含まれる場合はバッククオートで囲む
+- body なし版は subject line のみを返す
+- body あり版は subject に加えて、変更の意図や補足が伝わる短い body を付ける
+- body は冗長にしない。1-3 行程度で簡潔にまとめる
+- subject と body の間には 1 行空ける
+
+## 出力形式
+
+以下の 2 つをこの順番で提案する。
+
+### body なし版
+
+```text
+<type>: Subject
+```
+
+### body あり版
+
+```text
+<type>: Subject
+
+Body line 1
+Body line 2
+```
