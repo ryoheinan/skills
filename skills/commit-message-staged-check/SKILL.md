@@ -8,7 +8,7 @@ description: Draft Conventional Commits-style commit message variants from the c
 現在ステージングした内容を確認し、コミットメッセージを考える。
 
 コミットメッセージを提案するのみで、コミットはしない。
-常に「body なし版」と「body あり版」の 2 パターンを提案する。
+常に「body あり版」と「body なし版」の 2 パターンを提案する。
 
 ## ルール
 
@@ -22,6 +22,7 @@ description: Draft Conventional Commits-style commit message variants from the c
 - Ticket ID は含めない
 - `feat:` のように適切な prefix を使用する
 - @が含まれる場合はバッククオートで囲む
+- ユーザーが「コミットして」など実行を求めた場合は、特に指定がなければ body あり版を優先して採用する
 - body なし版は subject line のみを返す
 - body あり版は subject に加えて、変更の意図や補足が伝わる短い body を付ける
 - body は冗長にしない。1-3 行程度で簡潔にまとめる
@@ -31,12 +32,6 @@ description: Draft Conventional Commits-style commit message variants from the c
 
 以下の 2 つをこの順番で提案する。
 
-### body なし版
-
-```text
-<type>: Subject
-```
-
 ### body あり版
 
 ```text
@@ -44,4 +39,10 @@ description: Draft Conventional Commits-style commit message variants from the c
 
 Body line 1
 Body line 2
+```
+
+### body なし版
+
+```text
+<type>: Subject
 ```
