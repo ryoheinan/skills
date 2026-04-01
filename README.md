@@ -5,6 +5,8 @@ Install with [`vercel-labs/skills`](https://github.com/vercel-labs/skills).
 
 ## Install
 
+Per-project install:
+
 ```bash
 npx skills add ryoheinan/skills
 ```
