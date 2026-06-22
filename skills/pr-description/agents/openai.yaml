@@ -1,0 +1,10 @@
+interface:
+  display_name: "PR Description"
+  short_description: "Draft and update PR titles and descriptions from real PR context"
+  icon_small: "./assets/icon-small.svg"
+  icon_large: "./assets/icon-large.svg"
+  brand_color: "#2563EB"
+  default_prompt: "Use $pr-description to inspect this GitHub PR and related Linear ticket, draft an updated title and description, and wait for my approval before updating GitHub."
+
+policy:
+  allow_implicit_invocation: true

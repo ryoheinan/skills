@@ -1,0 +1,23 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_pr_description_small)">
+<path d="M46 0H18C8.05887 0 0 8.05887 0 18V46C0 55.9411 8.05887 64 18 64H46C55.9411 64 64 55.9411 64 46V18C64 8.05887 55.9411 0 46 0Z" fill="#EFF6FF"/>
+<path d="M22 12H37.5L47 21.5V42C47 45.866 43.866 49 40 49H22C18.134 49 15 45.866 15 42V19C15 15.134 18.134 12 22 12Z" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.6"/>
+<path d="M38 13V20C38 21.6569 39.3431 23 41 23H47" fill="#DBEAFE"/>
+<path d="M38 13V20C38 21.6569 39.3431 23 41 23H47" stroke="#93C5FD" stroke-width="1.6" stroke-linejoin="round"/>
+<path d="M25 29H39" stroke="#475569" stroke-width="2.4" stroke-linecap="round"/>
+<path d="M25 35H35" stroke="#94A3B8" stroke-width="2.4" stroke-linecap="round"/>
+<path d="M25 41H31" stroke="#CBD5E1" stroke-width="2.4" stroke-linecap="round"/>
+<path d="M22 22H32C35.3137 22 38 24.6863 38 28V30" stroke="#2563EB" stroke-width="2.4" stroke-linecap="round"/>
+<path d="M22 22V28" stroke="#2563EB" stroke-width="2.4" stroke-linecap="round"/>
+<path d="M22 24.7C23.4912 24.7 24.7 23.4912 24.7 22C24.7 20.5088 23.4912 19.3 22 19.3C20.5088 19.3 19.3 20.5088 19.3 22C19.3 23.4912 20.5088 24.7 22 24.7Z" fill="#FFFFFF" stroke="#2563EB" stroke-width="1.8"/>
+<path d="M22 36.7C23.4912 36.7 24.7 35.4912 24.7 34C24.7 32.5088 23.4912 31.3 22 31.3C20.5088 31.3 19.3 32.5088 19.3 34C19.3 35.4912 20.5088 36.7 22 36.7Z" fill="#2563EB" stroke="#DBEAFE" stroke-width="1.8"/>
+<path d="M38 32.7C39.4912 32.7 40.7 31.4912 40.7 30C40.7 28.5088 39.4912 27.3 38 27.3C36.5088 27.3 35.3 28.5088 35.3 30C35.3 31.4912 36.5088 32.7 38 32.7Z" fill="#2563EB" stroke="#DBEAFE" stroke-width="1.8"/>
+<path d="M40.6 45.4L34.8 47L36.4 41.2L46.6 31C47.4284 30.1716 48.7716 30.1716 49.6 31L50.8 32.2C51.6284 33.0284 51.6284 34.3716 50.8 35.2L40.6 45.4Z" fill="#0F766E"/>
+<path d="M36.4 41.2L40.6 45.4" stroke="#CCFBF1" stroke-width="1.8" stroke-linecap="round"/>
+</g>
+<defs>
+<clipPath id="clip0_pr_description_small">
+<rect width="64" height="64" fill="white"/>
+</clipPath>
+</defs>
+</svg>
