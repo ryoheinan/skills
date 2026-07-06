@@ -1,15 +1,15 @@
 ---
 name: safe-commit-preview
-description: Plan and create local git commits by choosing boundaries that match meaningful work chunks, not just the smallest working slice. Use when the user wants you to commit changes, split work into multiple commits, preview the commit plan before committing, or choose commit granularity based on natural task boundaries someone may want to keep or roll back later. Use `commit-message-staged-check` for commit message proposals, and never create commits until the user has seen and approved the preview.
+description: Plan and create local git commits by choosing boundaries that are easy to review by work context, not just the smallest or easiest-to-revert slice. Use when the user wants you to commit changes, split work into multiple commits, preview the commit plan before committing, or choose commit granularity based on reviewable context boundaries. Use `commit-message-staged-check` for commit message proposals, and never create commits until the user has seen and approved the preview.
 ---
 
 # safe-commit-preview
 
 Use this skill when committing local changes.
 
-Prioritize commit boundaries that reflect meaningful work chunks someone may later want to inspect, review, or revert as a unit.
+Prioritize commit boundaries that let reviewers understand one coherent work context at a time.
 
-Revert safety still matters, but only as a guardrail. It should validate the boundary, not define it by default.
+Revert safety still matters, but only as a guardrail after reviewability and coherence are satisfied. It should validate the boundary, not define it by default.
 
 Always show a preview before committing. Do not run `git commit` before the user has seen and approved the preview.
 
@@ -21,14 +21,15 @@ Always show a preview before committing. Do not run `git commit` before the user
 - Review `git status`, the staged diff, the unstaged diff, and recent commit history when needed
 - If the user asks to split the work into multiple commits, do not trust the current staging blindly; inspect the whole working tree before deciding the boundaries
 
-### 2. Choose commit boundaries by work context first
+### 2. Choose commit boundaries by review context first
 
 Think in this order:
 
-1. What are the distinct work chunks in this change set?
-2. Which chunk would someone naturally want to review, discuss, or revert as a unit later?
-3. Does that boundary still leave the codebase coherent if committed separately?
-4. If not, what is the nearest larger boundary that still matches the work context?
+1. What are the distinct review contexts in this change set?
+2. Which files or hunks belong to the same reviewer conversation?
+3. Which chunk would someone naturally want to review or discuss as a unit?
+4. Does that boundary still leave the codebase coherent if committed separately?
+5. If not, what is the nearest larger boundary that still matches the review context?
 
 Prefer to split these apart:
 
@@ -44,8 +45,9 @@ Do not force a split when:
 - splitting would create a broken intermediate state
 - the separated commits would no longer map cleanly to a meaningful work chunk
 - the implementation and follow-up adjustments are tightly coupled enough that treating them as different tasks would be artificial
+- the only benefit of the split is a smaller revert, while review would require reconstructing one logical change across multiple commits
 
-If the boundary is ambiguous, prefer the grouping that best matches the actual work story, then sanity-check that it is still safe enough to stand on its own.
+If the boundary is ambiguous, prefer the grouping that best matches the actual review story, then sanity-check that it is still safe enough to stand on its own.
 
 ### 3. Show a preview and wait for approval
 
@@ -56,7 +58,7 @@ For each proposed commit, include at least:
 - the proposed commit message
 - the scope of changes included
 - why those changes are grouped together
-- what work chunk or task boundary that commit represents
+- what review context or task boundary that commit represents
 - whether there is any revert or intermediate-state risk worth calling out
 - if something was intentionally not split out, the reason why
 
@@ -68,13 +70,13 @@ Commit preview
 1. feat: Add safe commit preview workflow
    Scope: add the main skill definition
    Why grouped: this is the main workflow change and stands as one reviewable task
-   Work boundary: introduces the core behavior of the skill
+   Review context: introduces the core behavior of the skill
    Risk note: low risk to keep separate because metadata does not depend on it
 
 2. chore: Add skill metadata for safe commit preview
    Scope: `agents/openai.yaml`
    Why grouped: this is UI metadata for the skill rather than workflow logic
-   Work boundary: updates presentation and invocation copy only
+   Review context: updates presentation and invocation copy only
    Risk note: safe to separate because it does not change the workflow itself
 ```
 
@@ -109,5 +111,6 @@ If the staged diff no longer matches the previewed message candidate, update the
 - Do not commit before showing a preview, even if the user simply says "commit this"
 - Do not immediately commit based only on what is already staged; include unstaged changes in the boundary decision when needed
 - Do not create mixed commits just because the feature works if they blur distinct work chunks
+- Do not split primarily for revert convenience when the result is harder to review
 - If you find unrelated changes or in-progress user work, do not mix them in silently; separate them or confirm first
 - If the work cannot be cleanly split, say so explicitly in the preview
