@@ -1,6 +1,7 @@
 ---
 name: pr-description
 description: Suggest and update GitHub PR titles and descriptions from the real PR diff and related Linear ticket. Use when the user asks to suggest a PR title, suggest a PR description, update a PR title/body, or invoke pr-description for a GitHub pull request. Prefer GitHub CLI for GitHub reads/writes, inspect the latest PR changes before drafting, include Linear context when provided, and require explicit user approval before mutating GitHub.
+license: Apache-2.0
 ---
 
 # pr-description
@@ -30,7 +31,7 @@ Draft or update PR metadata from source-of-truth context, not from memory or bra
 
 ## Description Rules
 
-- Write descriptions in both English and Japanese on each line, separated by ` / `.
+- Write descriptions in both English and Japanese on each line, separated by a slash with spaces around it.
   - Example: `Added Button component. / ボタンコンポーネントを追加しました。`
 - Keep Japanese text in standard Japanese.
 - Preserve existing HTML comments exactly, including markers such as:

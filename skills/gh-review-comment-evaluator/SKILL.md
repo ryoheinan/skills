@@ -1,6 +1,7 @@
 ---
 name: gh-review-comment-evaluator
 description: Evaluate GitHub pull request review comments and decide whether they should be fixed. Use when the user provides a GitHub pull request URL and asks to inspect review comments, summarize actionable feedback, judge whether each comment is must-fix or optional, check whether feedback is already resolved, or decide what to implement next. If the user wants to apply fixes, create an implementation plan before making code changes and follow the target repository instructions.
+license: Apache-2.0
 ---
 
 # gh-review-comment-evaluator

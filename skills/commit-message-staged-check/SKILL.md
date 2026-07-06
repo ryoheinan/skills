@@ -1,6 +1,7 @@
 ---
 name: commit-message-staged-check
 description: Draft Conventional Commits-style commit message variants from the current staged diff only. Use when a user asks for a commit message; inspect staged changes, never commit, provide both subject-only and subject-plus-body versions, and avoid numeric specifics unless they are the change itself.
+license: Apache-2.0
 ---
 
 # commit-message

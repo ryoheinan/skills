@@ -1,6 +1,7 @@
 ---
 name: safe-commit-preview
 description: Plan and create local git commits by choosing boundaries that are easy to review by work context, not just the smallest or easiest-to-revert slice. Use when the user wants you to commit changes, split work into multiple commits, preview the commit plan before committing, or choose commit granularity based on reviewable context boundaries. Use `commit-message-staged-check` for commit message proposals, and never create commits until the user has seen and approved the preview.
+license: Apache-2.0
 ---
 
 # safe-commit-preview
