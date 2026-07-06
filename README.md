@@ -37,3 +37,7 @@ pnpm check
 gh skill publish --dry-run
 gh skill publish
 ```
+
+## License
+
+Licensed under [Apache License 2.0](LICENSE).
