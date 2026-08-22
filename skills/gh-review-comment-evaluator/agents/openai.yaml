@@ -1,6 +1,8 @@
 interface:
   display_name: "GitHub Review Comment Evaluator"
   short_description: "Assess GitHub PR review comments and decide fixes"
+  icon_small: "./assets/icon-small.png"
+  icon_large: "./assets/icon-large.png"
   default_prompt: "Use $gh-review-comment-evaluator to inspect this GitHub PR URL, classify each review comment, and tell me what should be fixed."
 
 dependencies:
