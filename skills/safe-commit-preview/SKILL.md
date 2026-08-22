@@ -1,117 +1,70 @@
 ---
 name: safe-commit-preview
-description: Plan and create local git commits by choosing boundaries that are easy to review by work context, not just the smallest or easiest-to-revert slice. Use when the user wants you to commit changes, split work into multiple commits, preview the commit plan before committing, or choose commit granularity based on reviewable context boundaries. Use `commit-message-staged-check` for commit message proposals, and never create commits until the user has seen and approved the preview.
+description: Plan and create local git commits around reviewable work contexts. Use when the user asks to preview a commit plan, split changes, choose commit boundaries, or commit local changes. Preserve the existing index while preparing the preview, and create commits only when explicitly authorized.
 license: Apache-2.0
 ---
 
 # safe-commit-preview
 
-Use this skill when committing local changes.
+Plan commit boundaries around coherent reviewer conversations, then show the exact plan before committing.
 
-Prioritize commit boundaries that let reviewers understand one coherent work context at a time.
+Match the user's requested mode:
 
-Revert safety still matters, but only as a guardrail after reviewability and coherence are satisfied. It should validate the boundary, not define it by default.
-
-Always show a preview before committing. Do not run `git commit` before the user has seen and approved the preview.
+- For a preview or boundary-planning request, inspect and propose only. Approval of the plan does not authorize commits.
+- For a commit request, show the preview and wait for approval before creating any commit.
+- A later explicit instruction to commit authorizes only the most recently approved, still-matching preview.
 
 ## Workflow
 
 ### 1. Inspect the full change set
 
-- Check `AGENTS.md` and any local workflow rules first
-- Review `git status`, the staged diff, the unstaged diff, and recent commit history when needed
-- If the user asks to split the work into multiple commits, do not trust the current staging blindly; inspect the whole working tree before deciding the boundaries
+- Read `AGENTS.md` and other applicable repository instructions.
+- Inspect `git status`, staged, unstaged, and untracked changes. Use recent history when it helps match repository conventions.
+- Determine boundaries from the full change set rather than the current staging layout.
+- Preserve unrelated and in-progress user work.
 
-### 2. Choose commit boundaries by review context first
+### 2. Choose boundaries by review context
 
-Think in this order:
+Identify candidate contexts such as subsystem ownership, contracts, product behavior, UI, operational workflows, documentation, generated artifacts, and mechanical cleanup. These are signals, not mandatory file-based splits.
 
-1. What are the distinct review contexts in this change set?
-2. Which files or hunks belong to the same reviewer conversation?
-3. Which chunk would someone naturally want to review or discuss as a unit?
-4. Does that boundary still leave the codebase coherent if committed separately?
-5. If not, what is the nearest larger boundary that still matches the review context?
+- Keep tests with the behavior they verify.
+- Keep generated artifacts with their source configuration or contract.
+- Keep narrow documentation with the change it explains; separate broad operational guidance when it is a different reviewer conversation.
+- Separate unrelated tasks, preparatory refactors, formatting, and operational changes when they can be reviewed meaningfully on their own.
+- Express dependencies through commit order when each commit remains internally coherent.
 
-Prefer to split these apart:
+Do not choose a commit count in advance. Multiple services, generated bindings, deployment order, a shared phase label, or convenient whole-feature reverts do not by themselves justify one commit. Conversely, do not split tightly coupled changes when the result would be artificial or internally invalid.
 
-- separate tasks completed in the same branch
-- preparatory refactors and the feature that depends on them
-- behavior changes and pure formatting
-- rename or move operations and the logic changes that follow them when they represent different review topics
-- implementation work and follow-up cleanup when they are meaningfully different steps
-- tests and implementation when they correspond to different work phases or review conversations
+Each proposed commit should remain buildable and testable where practical. An incomplete end-to-end feature is acceptable; an internally broken commit is not. If no honest boundary avoids a known failure, identify the exact failing check and obtain explicit approval for that exception.
 
-Do not force a split when:
+Before proposing one commit across several apparent review contexts, state the plausible splits considered and the concrete coupling that prevents them. Generic claims that the changes are connected are insufficient.
 
-- splitting would create a broken intermediate state
-- the separated commits would no longer map cleanly to a meaningful work chunk
-- the implementation and follow-up adjustments are tightly coupled enough that treating them as different tasks would be artificial
-- the only benefit of the split is a smaller revert, while review would require reconstructing one logical change across multiple commits
+### 3. Prepare the preview safely
 
-If the boundary is ambiguous, prefer the grouping that best matches the actual review story, then sanity-check that it is still safe enough to stand on its own.
+Do not modify the user's real Git index solely to prepare the preview. When `commit-message-staged-check` needs a staged candidate, use a temporary alternate index initialized from `HEAD`, stage only that candidate's paths or hunks there, and leave the real index unchanged.
 
-### 3. Show a preview and wait for approval
+Use `commit-message-staged-check` for each candidate commit. Do not repeat its message-formatting rules here.
 
-Before any commit, always show the proposed commit plan as a preview.
+For each proposed commit, show:
 
-For each proposed commit, include at least:
+- the proposed commit message variants
+- the exact path or hunk scope needed to stage it
+- the review context and grouping rationale
+- material dependency, validation, or intermediate-state risks
 
-- the proposed commit message
-- the scope of changes included
-- why those changes are grouped together
-- what review context or task boundary that commit represents
-- whether there is any revert or intermediate-state risk worth calling out
-- if something was intentionally not split out, the reason why
+For a single commit spanning several apparent contexts, also show the considered splits and why each fails.
 
-Example preview:
+Then stop and wait for approval. For preview-only requests, stop even if the user approves the plan unless they explicitly ask to commit.
 
-```text
-Commit preview
+### 4. Commit only the approved plan
 
-1. feat: Add safe commit preview workflow
-   Scope: add the main skill definition
-   Why grouped: this is the main workflow change and stands as one reviewable task
-   Review context: introduces the core behavior of the skill
-   Risk note: low risk to keep separate because metadata does not depend on it
+Immediately before each commit:
 
-2. chore: Add skill metadata for safe commit preview
-   Scope: `agents/openai.yaml`
-   Why grouped: this is UI metadata for the skill rather than workflow logic
-   Review context: updates presentation and invocation copy only
-   Risk note: safe to separate because it does not change the workflow itself
-```
+- recheck the working tree and staged diff
+- stage only the approved paths or hunks
+- run `git diff --cached --check`
+- confirm that the staged content and commit message still match the preview
 
-After showing the preview, wait for approval. Do not push ahead with `git add` or `git commit` beyond what is needed to prepare an accurate preview.
+After each commit, recheck the remaining changes before continuing. If the scope, boundary, order, message, or relevant working-tree state differs from the approved preview, stop, show an updated preview, and wait for fresh approval.
 
-### 4. Propose commit messages
-
-Use `commit-message-staged-check` to generate commit message proposals.
-
-Always use that skill to inspect the staged diff and produce both a subject-only version and a subject-plus-body version.
-Adopt the subject-plus-body version as the actual commit message unless the user explicitly asks for a subject-only commit.
-Include the actual body-including candidate message you plan to use in the preview.
-
-- As required by `commit-message-staged-check`, always decide from the real staged diff
-- Use an appropriate prefix such as `feat:`
-- Start the subject with a capital letter
-- Do not include a ticket ID
-- Do not include non-essential concrete numeric values
-- Use the body-including version as the default
-
-If the staged diff no longer matches the previewed message candidate, update the preview instead of committing immediately.
-
-### 5. Commit only after approval
-
-- Stage only the files or hunks needed for each planned commit
-- Recheck the staged diff immediately before each commit
-- Make sure the preview still matches the actual staged content before running `git commit`
-- After each commit, review the remaining changes and confirm that the next planned boundary still makes sense
-
-## Guardrails
-
-- Do not commit before showing a preview, even if the user simply says "commit this"
-- Do not immediately commit based only on what is already staged; include unstaged changes in the boundary decision when needed
-- Do not create mixed commits just because the feature works if they blur distinct work chunks
-- Do not split primarily for revert convenience when the result is harder to review
-- If you find unrelated changes or in-progress user work, do not mix them in silently; separate them or confirm first
-- If the work cannot be cleanly split, say so explicitly in the preview
+Never mix unrelated changes into a commit or alter existing user staging without making the effect explicit.
