@@ -1,0 +1,10 @@
+interface:
+  display_name: "Reviewable Commits"
+  short_description: "Plan reviewable commits and preview them before execution"
+  icon_small: "./assets/icon-small.png"
+  icon_large: "./assets/icon-large.png"
+  brand_color: "#0F766E"
+  default_prompt: "Use $reviewable-commits to plan reviewable commit boundaries for my local changes, show me a preview first, and commit only if I explicitly ask."
+
+policy:
+  allow_implicit_invocation: true

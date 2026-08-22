@@ -1,10 +1,10 @@
 ---
-name: safe-commit-preview
+name: reviewable-commits
 description: Plan and create local git commits around reviewable work contexts. Use when the user asks to preview a commit plan, split changes, choose commit boundaries, or commit local changes. Preserve the existing index while preparing the preview, and create commits only when explicitly authorized.
 license: Apache-2.0
 ---
 
-# safe-commit-preview
+# reviewable-commits
 
 Plan commit boundaries around coherent reviewer conversations, then show the exact plan before committing.
 
