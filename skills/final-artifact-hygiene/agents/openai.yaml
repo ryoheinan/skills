@@ -1,0 +1,9 @@
+interface:
+  display_name: "Final Artifact Hygiene"
+  short_description: "Keep final documents free of conversational scaffolding"
+  icon_small: "./assets/icon-small.png"
+  icon_large: "./assets/icon-large.png"
+  default_prompt: "Use $final-artifact-hygiene to turn these notes into a reader-ready deliverable without carrying over conversational scaffolding."
+
+policy:
+  allow_implicit_invocation: true
