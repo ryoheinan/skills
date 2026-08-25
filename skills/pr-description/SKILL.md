@@ -28,12 +28,19 @@ Draft or update PR metadata from source-of-truth context, not from memory or bra
 - Omit the ticket prefix when the user says `ticket idはskip`, `ticketはskip`, or equivalent.
 - Keep the title in English.
 - Make the title describe the actual behavioral or structural change from the diff.
+- Use plain, specific wording. Avoid promotional or abstract claims, and name the actual change shown in the diff.
 
 ## Description Rules
 
 - Write descriptions in both English and Japanese on each line, separated by a slash with spaces around it.
   - Example: `Added Button component. / ボタンコンポーネントを追加しました。`
-- Keep Japanese text in standard Japanese.
+- Write each language naturally instead of translating word for word. Keep the meaning aligned, but use wording that a developer would normally use in that language.
+- Prefer plain, concrete descriptions of what changed and why it matters to reviewers. Name the affected behavior or structure instead of using vague claims.
+- Avoid inflated, promotional, or stereotypically AI-generated wording in both languages. For example, do not reach for words such as `leverage`, `seamless`, `robust`, `comprehensive`, `streamline`, `enhance`, `活用`, `シームレス`, `堅牢`, `包括的`, or `強化` when a simpler, more specific description is available. Use such terms only when they are technically accurate and necessary.
+- Remove filler that does not help a reviewer understand the change, such as generic claims that the implementation improves maintainability, reliability, or developer experience without evidence in the diff.
+- If a sentence could apply to many unrelated PRs, rewrite it using concrete facts from the diff.
+- Keep Japanese text in standard, straightforward Japanese. Avoid literal translations, unnecessary katakana, and repeated sentence endings that make the description sound mechanical.
+- Keep English text concise and idiomatic. Prefer direct verbs and familiar technical terms over formal or abstract phrasing.
 - Preserve existing HTML comments exactly, including markers such as:
   - `<!-- CURSOR_AGENT_PR_BODY_BEGIN -->`
   - `<!-- PRERELEASE_VERSION_START -->`
