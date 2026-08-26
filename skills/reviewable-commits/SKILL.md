@@ -10,9 +10,9 @@ Plan commit boundaries around coherent reviewer conversations, then show the exa
 
 Match the user's requested mode:
 
-- For a preview or boundary-planning request, inspect and propose only. Approval of the plan does not authorize commits.
-- For a commit request, show the preview and wait for approval before creating any commit.
-- A later explicit instruction to commit authorizes only the most recently approved, still-matching preview.
+- For a preview or boundary-planning request, inspect and propose only. Approval of that preview does not authorize commits unless the user also asked to commit.
+- For a commit request, show the preview and wait for approval before creating any commit. Once that commit intent is established, an affirmative response such as `OK` authorizes the still-matching preview; do not require the user to repeat the commit request.
+- A later explicit instruction to commit also authorizes the most recently shown, still-matching preview.
 
 ## Workflow
 
@@ -54,9 +54,9 @@ For each proposed commit, show:
 
 For a single commit spanning several apparent contexts, also show the considered splits and why each fails.
 
-Then stop and wait for approval. For preview-only requests, stop even if the user approves the plan unless they explicitly ask to commit.
+Stop after showing the preview. For commit requests, wait for approval; an affirmative response authorizes the matching preview without requiring another explicit commit instruction. For preview-only requests, do not infer commit intent from approval alone.
 
-### 4. Commit only the approved plan
+### 4. Commit only the authorized plan
 
 Immediately before each commit:
 
