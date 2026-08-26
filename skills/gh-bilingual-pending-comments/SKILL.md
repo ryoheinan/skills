@@ -24,8 +24,9 @@ Parse each URL into owner, repository, and pull request number. Prefer these rea
 gh api user
 gh api --paginate --slurp repos/OWNER/REPO/pulls/NUMBER/reviews
 gh api --paginate --slurp repos/OWNER/REPO/pulls/NUMBER/reviews/REVIEW_ID/comments
-gh api repos/OWNER/REPO/pulls/comments/COMMENT_ID
 ```
+
+Capture each comment's numeric `id` and GraphQL `node_id` from that list. Do not `GET /repos/OWNER/REPO/pulls/comments/COMMENT_ID`; pending comments are not available there.
 
 Flatten the page arrays returned by `--slurp` before selecting reviews or comments. Select a review only when its state is `PENDING` and its author login matches the authenticated login. Confirm that every selected comment belongs to that review and author. If there is no match or more than one match, stop and report the ambiguity.
 
@@ -72,12 +73,24 @@ Present every proposed body in full. Ask for explicit approval to apply that exa
 
 Authorization applies only to the latest exact preview. Before the first update, re-fetch the review and selected target comments. For a pull request URL, also confirm that the complete target comment set is unchanged. Stop and create a new preview if the review is no longer pending, a target changed, or any original body differs.
 
-Immediately before each update, confirm again that the review is pending and that the target comment body still matches the previewed original. Then update only its body through this endpoint:
+Immediately before each update, confirm again that the review is pending and that the target comment body still matches the previewed original. Then update only its body with GraphQL `updatePullRequestReviewComment`. Pass the comment's `node_id` as `variables.id`; do not pass the numeric REST `id`.
 
 ```sh
-gh api --method PATCH repos/OWNER/REPO/pulls/comments/COMMENT_ID --input BODY_JSON_FILE
+gh api graphql --input BODY_JSON_FILE
 ```
 
-Create the temporary JSON payload with a JSON-aware encoder and a single `body` field; do not interpolate or hand-escape comment text into shell syntax. Pass the complete multiline body without lossy escaping, remove the temporary payload after use, and do not expose tokens or place comment content in logs beyond what the user approved in the preview.
+Create the temporary JSON payload with a JSON-aware encoder. The payload must be a GraphQL request with a `query` and a `variables` object that contains only `id` and `body`. Do not interpolate or hand-escape comment text into shell syntax.
 
-After each update, re-fetch the comment and verify its complete body. After all updates, re-fetch the review and confirm it remains pending. If any read, permission check, update, or verification fails, stop without retrying or rolling back automatically. Report which comments were verified as updated, which remain unchanged, and which have unknown status. Explain when `Pull requests: write` permission is required.
+```json
+{
+  "query": "mutation($id: ID!, $body: String!) { updatePullRequestReviewComment(input: { pullRequestReviewCommentId: $id, body: $body }) { pullRequestReviewComment { id body } } }",
+  "variables": {
+    "id": "PRRC_...",
+    "body": "complete replacement body"
+  }
+}
+```
+
+Treat a GraphQL `errors` array as a failed update even when the HTTP status is 200. Pass the complete multiline body without lossy escaping, remove the temporary payload after use, and do not expose tokens or place comment content in logs beyond what the user approved in the preview.
+
+After each update, re-fetch the pending review's comment list and verify the complete body. After all updates, re-fetch the review and confirm it remains pending. If any read, permission check, update, or verification fails, stop without retrying or rolling back automatically. Report which comments were verified as updated, which remain unchanged, and which have unknown status. Explain when `Pull requests: write` permission is required.
