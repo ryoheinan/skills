@@ -22,15 +22,15 @@ Parse each URL into owner, repository, and pull request number. Prefer these rea
 
 ```sh
 gh api user
-gh api --paginate repos/OWNER/REPO/pulls/NUMBER/reviews
-gh api --paginate repos/OWNER/REPO/pulls/NUMBER/reviews/REVIEW_ID/comments
+gh api --paginate --slurp repos/OWNER/REPO/pulls/NUMBER/reviews
+gh api --paginate --slurp repos/OWNER/REPO/pulls/NUMBER/reviews/REVIEW_ID/comments
 gh api repos/OWNER/REPO/pulls/comments/COMMENT_ID
 ```
 
-Select a review only when its state is `PENDING` and its author login matches the authenticated login. Confirm that every selected comment belongs to that review and author. If there is no match or more than one match, stop and report the ambiguity.
+Flatten the page arrays returned by `--slurp` before selecting reviews or comments. Select a review only when its state is `PENDING` and its author login matches the authenticated login. Confirm that every selected comment belongs to that review and author. If there is no match or more than one match, stop and report the ambiguity.
 
 - When given only a pull request URL, target every inline comment in that pending review.
-- When given direct review-comment URLs, target only comments whose API `html_url` matches those links. All links must resolve to the same pull request and pending review.
+- When given direct review-comment URLs, normalize the supplied and API URLs by removing query parameters and trailing slashes before comparing `html_url`. If a supplied URL safely exposes a numeric review-comment ID, also use it as a secondary match against the API `id`. All links must resolve to the same pull request and pending review.
 - Reject a link that does not resolve uniquely to an inline comment in that review, including an issue comment, review summary, reply, submitted comment, or another user's comment.
 
 ## Prepare bilingual bodies
@@ -47,11 +47,11 @@ Place Japanese before English. For a prose-only comment, use:
 > This comment was translated by AI.
 ```
 
-Preserve meaning, request strength, conditions, and technical terminology across both languages. Write natural prose rather than translating word for word.
+Translate the comment as a whole. Put the complete Japanese prose before the complete English prose; do not alternate languages by sentence or paragraph. Preserve meaning, request strength, conditions, tone, and technical terminology, but freely split, merge, reorder, or rephrase sentences and paragraphs when that makes each language natural. Do not imitate the source structure mechanically or translate word for word.
 
-- Keep fenced code, `suggestion` blocks, inline code, URLs, mentions, file paths, and identifiers unchanged and present only once.
-- Preserve Markdown structure. When prose and non-translatable blocks are interleaved, render each prose section as a Japanese-English pair and keep each shared block once in its original relative position.
-- For lists, quotes, or headings, preserve their Markdown role in both language versions.
+- Use this final order: complete Japanese prose, complete English prose, unchanged fenced code or `suggestion` blocks in their original order and present only once, then the AI notice.
+- Keep inline code, URLs, mentions, file paths, and identifiers unchanged. Repeat them in both language sections when needed for each section to stand on its own.
+- Preserve the role of lists, quotes, and headings while allowing their structure to differ naturally between languages.
 - Treat the existing Japanese or English text as authoritative and add the missing language. If both languages already express the same meaning, do not rewrite them merely for style.
 - Append the AI notice only when this run generates or revises a translation. If an equivalent AI-translation notice already exists, do not add another.
 - If both languages already express the same meaning and this run does not change either translation, skip the comment; do not add the notice by itself.
