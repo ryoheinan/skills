@@ -43,8 +43,6 @@ Place Japanese before English. For a prose-only comment, use:
 
 <English text>
 
----
-
 > This comment was translated by AI.
 ```
 
