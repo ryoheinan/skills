@@ -1,0 +1,9 @@
+interface:
+  display_name: "Translate GitHub Review Comments"
+  short_description: "Add English to pending Japanese PR review comments"
+  icon_small: "./assets/icon-small.png"
+  icon_large: "./assets/icon-large.png"
+  default_prompt: "Use $gh-translate-review-comments to preview English translations for the pending review comments at these GitHub links, keeping the original Japanese unchanged and skipping English-only comments."
+
+policy:
+  allow_implicit_invocation: true

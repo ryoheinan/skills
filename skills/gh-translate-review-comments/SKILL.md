@@ -1,12 +1,12 @@
 ---
-name: gh-bilingual-pending-comments
-description: Preview and apply Japanese-English rewrites to the authenticated user's inline comments in a pending GitHub pull request review. Use when a user provides a pull request URL or direct review-comment links and asks to make their unsubmitted comments bilingual. Do not use for submitted reviews, review summaries, issue comments, or replies.
+name: gh-translate-review-comments
+description: Add English translations to the authenticated user's Japanese inline comments in a pending GitHub pull request review, preserving the original text exactly and skipping English-only comments. Use when a user provides a pull request URL or direct review-comment links and asks to make their unsubmitted comments bilingual. Do not use for submitted reviews, review summaries, issue comments, or replies.
 license: Apache-2.0
 ---
 
-# GitHub Bilingual Pending Comments
+# Translate GitHub Review Comments
 
-Accept a GitHub pull request URL or one or more direct review-comment URLs. Use GitHub CLI to find the authenticated user's pending review, prepare exact bilingual rewrites, and update GitHub only after the user explicitly approves the preview.
+Accept a GitHub pull request URL or one or more direct review-comment URLs. Use GitHub CLI to find the authenticated user's pending review, preview appended English translations without changing the original Japanese, and update GitHub only after the user explicitly approves the preview.
 
 ## Boundaries
 
@@ -34,38 +34,39 @@ Flatten the page arrays returned by `--slurp` before selecting reviews or commen
 - When given direct review-comment URLs, normalize the supplied and API URLs by removing query parameters and trailing slashes before comparing `html_url`. If a supplied URL safely exposes a numeric review-comment ID, also use it as a secondary match against the API `id`. All links must resolve to the same pull request and pending review.
 - Reject a link that does not resolve uniquely to an inline comment in that review, including an issue comment, review summary, reply, submitted comment, or another user's comment.
 
-## Prepare bilingual bodies
+## Prepare English translations
 
-Place Japanese before English. For a prose-only comment, use:
+- Never edit the original Japanese text, including wording, punctuation, whitespace, line breaks, and Markdown formatting. Do not correct typos or rephrase it for style.
+- Skip English-only comments unchanged. Do not translate them into Japanese or add an AI notice.
+- If both languages already express the same meaning, skip the comment unchanged. If an existing translation conflicts with the Japanese or its coverage is unclear, mark it as requiring clarification rather than rewriting either language or appending a duplicate translation.
+- If a comment has no translatable prose, skip it. If ambiguity prevents a meaning-preserving translation, mark it as requiring clarification and do not propose an update.
+
+For a Japanese comment that needs an English translation, keep the complete original body as an exact, unchanged prefix and append the complete English translation after it:
 
 ```md
-<Japanese text>
+<Original Japanese comment, unchanged, including any code blocks>
 
-<English text>
+<English translation>
 
 > This comment was translated by AI.
 ```
 
-Translate the comment as a whole. Put the complete Japanese prose before the complete English prose; do not alternate languages by sentence or paragraph. Preserve meaning, request strength, conditions, tone, and technical terminology, but freely split, merge, reorder, or rephrase sentences and paragraphs when that makes each language natural. Do not imitate the source structure mechanically or translate word for word.
+Translate the comment as a whole; do not alternate languages by sentence or paragraph. Make only the new English prose natural, preserving the Japanese meaning, request strength, conditions, tone, and technical terminology. Sentence and paragraph structure may differ in the English translation; the Japanese source must remain untouched.
 
-- Use this final order: complete Japanese prose, complete English prose, unchanged fenced code or `suggestion` blocks in their original order and present only once, then the AI notice.
-- Keep inline code, URLs, mentions, file paths, and identifiers unchanged. Repeat them in both language sections when needed for each section to stand on its own.
-- Preserve the role of lists, quotes, and headings while allowing their structure to differ naturally between languages.
-- Treat the existing Japanese or English text as authoritative and add the missing language. If both languages already express the same meaning, do not rewrite them merely for style.
-- Append the AI notice only when this run generates or revises a translation. If an equivalent AI-translation notice already exists, do not add another.
-- If both languages already express the same meaning and this run does not change either translation, skip the comment; do not add the notice by itself.
-- If a comment has no translatable prose, skip it rather than adding a misleading translation notice.
-- If ambiguity prevents a meaning-preserving translation, mark the comment as requiring clarification and do not propose an update for it.
+- Keep fenced code and `suggestion` blocks exactly where they appear in the original body, unchanged and present only once. Refer to them from the English translation as needed; never move them to achieve a preferred bilingual layout.
+- Keep inline code, URLs, mentions, file paths, and identifiers unchanged. Repeat them in the English section when needed for it to stand on its own.
+- Preserve the role of lists, quotes, and headings in the English translation without changing the original formatting.
+- Append the AI notice only when this run adds a translation. If an equivalent notice already exists, leave it in its original position and do not add another.
 
 ## Preview before writing
 
 Do not mutate GitHub while preparing the preview. Group results as:
 
 - `update`: comment ID, file and available line or range, complete original body, and complete proposed body
-- `skip`: comment ID and reason, such as already bilingual without a translation change or no translatable prose
+- `skip`: comment ID and reason, such as English-only, already bilingual, or no translatable prose
 - `clarification-needed`: comment ID, the ambiguous text, and the decision needed
 
-Present every proposed body in full. Ask for explicit approval to apply that exact preview. A request to inspect, translate, preview, or improve comments is not approval to update GitHub.
+Before presenting the preview, verify that each proposed body starts with the exact original body and that all additions follow it. Present every proposed body in full. Ask for explicit approval to apply that exact preview. A request to inspect, translate, preview, or improve comments is not approval to update GitHub.
 
 ## Apply an approved preview
 

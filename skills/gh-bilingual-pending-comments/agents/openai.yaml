@@ -1,9 +1,0 @@
-interface:
-  display_name: "GitHub Bilingual Pending Comments"
-  short_description: "Rewrite pending PR comments in Japanese and English"
-  icon_small: "./assets/icon-small.png"
-  icon_large: "./assets/icon-large.png"
-  default_prompt: "Use $gh-bilingual-pending-comments to preview Japanese and English rewrites for the pending review comments at these GitHub links."
-
-policy:
-  allow_implicit_invocation: true
