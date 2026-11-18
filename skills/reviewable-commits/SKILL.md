@@ -10,9 +10,8 @@ Plan commit boundaries around coherent reviewer conversations, then show the exa
 
 Match the user's requested mode:
 
-- For a preview or boundary-planning request, inspect and propose only. Approval of that preview does not authorize commits unless the user also asked to commit.
-- For a commit request, show the preview and wait for approval before creating any commit. Once that commit intent is established, an affirmative response such as `OK` authorizes the still-matching preview; do not require the user to repeat the commit request.
-- A later explicit instruction to commit also authorizes the most recently shown, still-matching preview.
+- **Default (Commit workflow)**: Unless the user explicitly asks for "preview only" or "planning only", treat all invocations (including a bare `/reviewable-commits` or phrases like "commit this") as intent to commit. Always inspect, prepare, and show the complete preview first—never commit without showing the preview. Once shown, an affirmative response such as `OK`, `y`, `LGTM`, or `進めて` authorizes executing that matching preview immediately. Do not ask for confirmation again.
+- **Preview-only request**: Only when the user explicitly asks to preview, inspect, or plan without committing (e.g., "preview only", "plan only", "確認だけ", "まだコミットはしないで"), inspect and propose only. In this mode, approval of the preview does not authorize commits.
 
 ## Workflow
 
@@ -54,7 +53,7 @@ For each proposed commit, show:
 
 For a single commit spanning several apparent contexts, also show the considered splits and why each fails.
 
-Stop after showing the preview. For commit requests, wait for approval; an affirmative response authorizes the matching preview without requiring another explicit commit instruction. For preview-only requests, do not infer commit intent from approval alone.
+Stop after showing the preview. Never commit in the same turn that generates the preview. For the default commit workflow, wait for the user's response; an affirmative response authorizes executing the matching preview immediately without requiring another explicit commit instruction. For preview-only requests, do not infer commit intent from approval alone.
 
 ### 4. Commit only the authorized plan
 
